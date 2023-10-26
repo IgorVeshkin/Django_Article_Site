@@ -1,0 +1,38 @@
+{% load static %}
+{% load Articles_tags %}
+
+<div class="{{ class_name }}">
+
+{% if sidebar_for_mobiles %}
+	<div class="mobile-sidebar-exit-btn">X</div>
+{% endif %}
+
+				<div class="categories">
+					{% getThemeList as categories %}
+					{% for item_key, items in categories.items %}
+					<ul class="cat-list"> <a href="#" class="main">{{ item_key }}</a>
+						{% if items %}
+						{% for current_item in items %}
+						{% if current_theme and current_item != current_theme %}
+						<li><a href="{% url 'theme-page' theme=current_item page_id=1 %}">{% replace_underlines filter=current_item %} ({% getThemeCountList theme=current_item %})</a></li>
+						{% elif current_theme and current_item == current_theme %}
+						<li class="current_theme_selected">{% replace_underlines filter=current_item %} ({% getThemeCountList theme=current_item %})</li>
+						{% elif not current_theme %}
+						<li><a href="{% url 'theme-page' theme=current_item page_id=1 %}">{% replace_underlines filter=current_item %} ({% getThemeCountList theme=current_item %})</a></li>
+						{% endif %}
+						{% endfor %}
+						{% endif %}
+					</ul>
+					{% endfor %}
+
+				</div>
+
+				<div class="youtube-box">
+					<p>Our Youtube Channel</p><img class="youtube-logo" src="{% static 'images/youtube_icon.png' %}">
+				</div>
+
+				<div class="vk-box">
+					<p>Our Vk Group</p><img class="vk-logo" src="{% static 'images/vk_logo.png' %}">
+				</div>
+
+</div>

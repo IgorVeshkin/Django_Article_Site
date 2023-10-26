@@ -1,0 +1,38 @@
+{% extends "Articles/DistroLinux_base.html" %}
+{% load static %}
+{% block link-css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/DistroLinux_index_style.css' %}?version=1">
+{% endblock link-css %}
+
+{% block main-content %}
+<form method="POST" enctype="multipart/form-data" class="add-article-form-body">
+    <label><h2>Add new article about Linux Distros</h2></label>
+
+    {% csrf_token %}
+
+    <div class="article-form">
+    {% for field in article_form %}
+        {% if not field.field.widget.input_type %}
+            <div class="textarea-field">
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+            </div>
+        {% elif field.field.widget.input_type in 'file' %}
+             <div class="inputfile-field">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+             </div>
+        {% else %}
+            <div class="fieldWrapper">
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+            </div>
+        {% endif %}
+
+{% endfor %}
+    </div>
+    <input type="submit" class="submit_btn" value="Upload">
+
+
+</form>
+{% endblock main-content %}

@@ -1,0 +1,27 @@
+{% if theme == None %}
+
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=1 %}">1</a></button>
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=2 %}">...</a></button>
+
+    {% for page_item in page_numbers %}
+        {% if page_item != current_page_id %}
+            <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=page_item %}">{{ page_item }}</a></button>
+        {% else %}
+            <button class="articles-page-btn-selected" >{{ page_item }}</button>
+        {% endif %}
+    {% endfor %}
+
+{% else %}
+
+    <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=1 %}">1</a></button>
+        <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=2 %}">...</a></button>
+
+        {% for page_item in page_numbers %}
+            {% if page_item != current_page_id %}
+                <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=page_item %}">{{ page_item }}</a></button>
+            {% else %}
+                <button class="articles-page-btn-selected" >{{ page_item }}</button>
+            {% endif %}
+        {% endfor %}
+
+{% endif %}

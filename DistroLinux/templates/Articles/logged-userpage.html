@@ -1,0 +1,52 @@
+{% extends "Articles/DistroLinux_base.html" %}
+
+{% block main-content %}
+<!--  <div class="profile-data">-->
+
+    <h2>Profile:</h2>
+<!--    <div class="profile-image">-->
+      <div class="profile-data">
+      {% if current_user.profile_image %}
+          <div class="profile-img-class">
+              <img src="{{ current_user.profile_image.url }}" class="profile-img">
+          </div>
+      <!--      <img src="{{ current_user.profile_image.url }}" width="450" height="600">-->
+      {% endif %}
+<!--    </div>-->
+        <div class="profile-text-data">
+          <div class="profile-data-line">
+              <div class="data-label">ID: </div> <div class="data-info"> {{ current_user.user.id }} </div>
+          </div>
+
+            <div class="profile-data-line">
+                <div class="data-label">Username: </div> <div class="data-info"> {{ current_user.user.username }} </div>
+            </div>
+
+            <div class="profile-data-line">
+                <div class="data-label">Email: </div> <div class="data-info"> {{ current_user.user.email }} </div>
+            </div>
+
+            <div class="profile-data-line">
+                <div class="data-label">Phone: </div> <div class="data-info"> {{ current_user.phone_number }} </div>
+            </div>
+
+        </div>
+
+      </div>
+
+    <div class="profile-bio-data">
+           <div>Biography: </div> <div>{{ current_user.bio }} </div>
+    </div>
+    {% if request.user.id == current_user.user.id %}
+    <a href="{% url 'change-profile-page' user_pk=request.user.id username=request.user.get_username %}"><button class="change-profile-btn"> Change Profile</button></a>
+    {% endif %}
+<!--  </div>-->
+
+  <br>
+  <form method="POST" enctype="multipart/form-data" action="">
+     {% csrf_token %}
+      {{ profile_form.as_div }}
+<!--    <button type="submit">Save data</button>-->
+  </form>
+<!--  <br>-->
+{% endblock main-content %}

@@ -1,0 +1,30 @@
+{% extends "Articles/DistroLinux_base.html" %}
+
+{% block main-content %}
+
+<div class="registration">
+    {% if not request.user.is_authenticated %}
+    <form method="POST" enctype="multipart/form-data" class="registration-form">
+
+        <label class="registration-label">Registration form</label></br></br>
+
+        {% csrf_token %}
+
+        {{ register_form }}
+
+        <button class="register-btn" type="submit">Register</button>
+
+    </form>
+
+    {% else %}
+
+    <label class="logged-in-message">
+        Sorry... But you are already logged in. Please log out first to see registration form.
+    </label>
+
+    {% endif %}
+
+</div>
+
+
+{% endblock main-content %}

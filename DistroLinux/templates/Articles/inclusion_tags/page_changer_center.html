@@ -1,0 +1,44 @@
+{% if theme == None %}
+
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=1 %}">1</a></button>
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=2 %}">...</a></button>
+
+
+    {% if last_page >= 16 and current_page_id >= 6 and current_page_id <= last_page|add:-6 %}
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=current_page_id|add:-2 %}">{{ current_page_id|add:-2 }}</a></button>
+    {% endif %}
+
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=current_page_id|add:-1 %}">{{ current_page_id|add:-1 }}</a></button>
+    <button class="articles-page-btn-selected" >{{ current_page_id }}</button>
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=current_page_id|add:1 %}">{{ current_page_id|add:1 }}</a></button>
+
+    {% if last_page >= 16 and current_page_id >= 6 and current_page_id <= last_page|add:-6 %}
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=current_page_id|add:2 %}">{{ current_page_id|add:2 }}</a></button>
+    {% endif %}
+
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=last_page|add:-1 %}">...</a></button>
+    <button class="articles-page-changer-btn" ><a href="{% url 'show-pages' page_id=last_page %}">{{ last_page }}</a></button>
+
+{% else %}
+
+    <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=1 %}">1</a></button>
+    <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=2 %}">...</a></button>
+
+
+{% if last_page >= 16 and current_page_id >= 6 and current_page_id <= last_page|add:-6 %}
+    <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=current_page_id|add:-2 %}">{{ current_page_id|add:-2 }}</a></button>
+    {% endif %}
+
+    <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=current_page_id|add:-1 %}">{{ current_page_id|add:-1 }}</a></button>
+    <button class="articles-page-btn-selected" >{{ current_page_id }}</button>
+    <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=current_page_id|add:1 %}">{{ current_page_id|add:1 }}</a></button>
+
+    {% if last_page >= 16 and current_page_id >= 6 and current_page_id <= last_page|add:-6 %}
+    <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=current_page_id|add:2 %}">{{ current_page_id|add:2 }}</a></button>
+    {% endif %}
+
+    <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=last_page|add:-1 %}">...</a></button>
+    <button class="articles-page-changer-btn" ><a href="{% url 'theme-page' theme=theme page_id=last_page %}">{{ last_page }}</a></button>
+
+{% endif %}
+

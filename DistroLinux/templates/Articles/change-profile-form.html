@@ -1,0 +1,13 @@
+{% extends 'Articles/DistroLinux_base.html' %}
+
+{% block main-content %}
+<a href="{% url 'logged-user-page' user_pk=request.user.id username=request.user.get_username %}"><button class="change-profile-btn">Go Back</button></a>
+
+
+<form method="POST" enctype="multipart/form-data" action="">
+      {% csrf_token %}
+      {{ profile_form.as_div }}
+    <button type="submit">Save data</button>
+  </form>
+
+{% endblock main-content %}

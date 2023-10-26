@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+{% load static %}
+{% load Articles_tags %}
+<html>
+<head>
+	<title>{% block title %} DistroLinux - Website about Linux {% endblock title %}</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	{% block link-css %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/DistroLinux_index_style.css' %}?version=1">
+	{% endblock link-css %}
+</head>
+<body>
+	<div class="container">
+		<div class="header">
+			<a href="{% url 'main' %}"><img class="logo" src="{% static 'images/linux-icon-2-transparent.png' %}"></a>
+			<nav>
+				<ul>
+					<li><a href="#">About Project</a></li>
+					<li><a href="{% url 'add-article' %}">Add Article</a></li>
+					<li><a href="#">Articles</a></li>
+					<li><p id="timer_lb"></p></li>
+				</ul>
+			</nav>
+
+			<div class="Login">
+				{% if request.user.is_authenticated %}
+				<text>You're</text><a href="{% url 'logged-user-page' username=request.user.get_username user_pk=request.user.id %}">{{ request.user.username|truncatechars:10 }}</a><text>|</text><a href="{% url 'logout' %}">Log Out</a>
+				{% else %}
+				<a href="{% url 'show-register-page' %}">Register</a><text>|</text><a href="{% url 'login-request' %}">Log In</a>
+				{% endif %}
+
+			</div>
+
+			<div class="mobile-nav-btn">
+<!--				<p>NavBar</p>-->
+				<div class="lines">
+					<div class="navbar-line"></div>
+					<div class="navbar-line"></div>
+					<div class="navbar-line"></div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="sidepanel-on-mobiles">
+			<div class="sidepanel-user-data">
+
+			{% if request.user.is_authenticated %}
+				<text>You're </text><a href="{% url 'logged-user-page' username=request.user.get_username user_pk=request.user.id %}">{{ request.user.username|truncatechars:10 }}</a><text> | </text><a href="{% url 'logout' %}">Log Out</a>
+			{% else %}
+				<a href="{% url 'show-register-page' %}">Register</a><text> | </text><a href="{% url 'login-request' %}">Log In</a>
+			{% endif %}
+
+				</div>
+
+			{% draw_nav_sidebar mobile_sidebar=True class_name="left-sidebar-for-mobiles"%}
+		</div>
+
+		<div class="content">
+
+			<div class="left-sidebar">
+				{% draw_nav_sidebar  page_theme=current_theme %}
+<!--				<div class="left-sidebar-sticky">-->
+
+<!--				<div class="categories">-->
+<!--					{% getThemeList as categories %}-->
+<!--					{% for item_key, items in categories.items %}-->
+<!--					<ul class="cat-list"> <a href="#" class="main">{{ item_key }}</a>-->
+<!--						{% if items %}-->
+<!--						{% for current_item in items %}-->
+
+<!--						{% if current_theme and current_item != current_theme %}-->
+<!--						<li><a href="{% url 'theme-page' theme=current_item page_id=1 %}">{% replace_underlines filter=current_item %} ({% getThemeCountList theme=current_item %})</a></li>-->
+<!--						{% elif current_theme and current_item == current_theme %}-->
+<!--						<li class="current_theme_selected">{% replace_underlines filter=current_item %} ({% getThemeCountList theme=current_item %})</li>-->
+<!--						{% elif not current_theme %}-->
+<!--						<li><a href="{% url 'theme-page' theme=current_item page_id=1 %}">{% replace_underlines filter=current_item %} ({% getThemeCountList theme=current_item %})</a></li>-->
+<!--						{% endif %}-->
+<!--						{% endfor %}-->
+<!--						{% endif %}-->
+<!--					</ul>-->
+<!--					{% endfor %}-->
+
+<!--				</div>-->
+
+<!--				<div class="youtube-box">-->
+<!--					<p>Our Youtube Channel</p><img class="youtube-logo" src="{% static 'images/youtube_icon.png' %}">-->
+<!--				</div>-->
+
+<!--				<div class="vk-box">-->
+<!--					<p>Our Vk Group</p><img class="vk-logo" src="{% static 'images/vk_logo.png' %}">-->
+<!--				</div>-->
+
+<!--				</div>-->
+
+			</div>
+
+			<div class="main-content">
+
+				{% block main-content %}
+
+				{% minus_numbers value=page_id arg=1 as start1 %}
+				{% multiply_numbers value=start1 arg=articles_on_screen as real_start %}
+				{% multiply_numbers value=page_id arg=articles_on_screen as real_end %}
+
+
+				{% if not current_theme %}
+					{% limited_query_data start=real_start end=real_end as article_limited %}
+				{% else %}
+					{% limited_query_data start=real_start end=real_end theme=current_theme as article_limited %}
+				{% endif %}
+				{% for article in article_limited %}
+				<div class="article">
+					<h1>{{ article.title }}</h1>
+					 <br>
+					<div class="article_content">
+						<img class="article_picture" src="{{ article.image.url }}">
+						<p>{{ article.content|truncatechars:1055 }}</p>
+					</div>
+					<div class='btn'><p class= "date-and-author">{{article.author}} | {% replace_underlines filter=article.theme %} | {{article.creation_time|date:"d-m-Y : H:i:s"}}</p>
+						<a href="{{ article.get_absolute_url }}"><button class="read-more">Read article</button></a></div>
+				</div>
+				{% empty %}
+				<div class="no-themed-articles-text">
+					<p>Opps... Seems like there are no articles of this theme on the web-site! Be first to add one</p>
+					<br>
+					<a href="{% url 'add-article' %}">Write Article</a>
+				</div>
+				{% endfor %}
+
+				<div class="articles-page-changer">
+					{% if not current_theme %}
+						{% all_articles_count number_of_article_on_page=articles_on_screen as articles_page_count %}
+					{% else %}
+						{% all_articles_count number_of_article_on_page=articles_on_screen theme=current_theme as articles_page_count %}
+					{% endif %}
+					{% devide_numbers value=articles_page_count arg=2 as articles_counter_half %}
+					{% minus_numbers value=articles_page_count arg=3 as articles_counter_right_limit %}
+
+					{% if articles_page_count < 8 %}
+
+						{% if articles_page_count > 1 %}
+							{% if current_theme != None %}
+								{% page_changer_sequence page_count=articles_page_count cur_page=page_id theme=current_theme %}
+							{% else %}
+								{% page_changer_sequence page_count=articles_page_count cur_page=page_id%}
+							{% endif %}
+						{% endif %}
+
+					{% elif articles_page_count == 8 %}
+
+						{% if page_id < 5 %}
+							{% if current_theme != None %}
+								{% draw_page_changer_left page_count=articles_page_count cur_page=page_id theme=current_theme %}
+							{% else %}
+								{% draw_page_changer_left page_count=articles_page_count cur_page=page_id %}
+							{% endif %}
+
+						{% elif page_id >= 5 %}
+
+							{% if current_theme != None %}
+								{% draw_page_changer_right page_count=articles_page_count cur_page=page_id theme=current_theme %}
+							{% else %}
+								{% draw_page_changer_right page_count=articles_page_count cur_page=page_id %}
+							{% endif %}
+
+						{% endif %}
+
+					{% elif articles_page_count > 8 %}
+
+						{% if page_id < 5 %}
+
+							{% if current_theme != None %}
+								{% draw_page_changer_left page_count=articles_page_count cur_page=page_id theme=current_theme %}
+							{% else %}
+								{% draw_page_changer_left page_count=articles_page_count cur_page=page_id %}
+							{% endif %}
+
+						{% elif page_id >= 5 %}
+
+							{% if page_id < articles_counter_right_limit %}
+
+								{% if current_theme != None %}
+									{% draw_page_changer_center page_count=articles_page_count cur_page=page_id theme=current_theme %}
+								{% else %}
+									{% draw_page_changer_center page_count=articles_page_count cur_page=page_id %}
+								{% endif %}
+
+							{% elif page_id >= articles_counter_right_limit %}
+
+								{% if current_theme != None %}
+								{% draw_page_changer_right page_count=articles_page_count cur_page=page_id theme=current_theme %}
+							{% else %}
+								{% draw_page_changer_right page_count=articles_page_count cur_page=page_id %}
+							{% endif %}
+
+							{% endif %}
+
+
+						{% endif %}
+
+					{% endif %}
+
+				</div>
+				{% endblock main-content %}
+			</div>
+
+		</div>
+
+		<div class="footer"></div>
+	</div>
+</body>
+<script type="text/javascript" src="{% static 'js/DistroLinux_index_js.js' %}"></script>
+</html>
